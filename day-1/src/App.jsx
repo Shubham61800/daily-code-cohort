@@ -1,32 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "preact/hooks";
+
 import axios from "axios";
+import "./app.css";
 
-function App() {
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    const res = axios.get("https://dummyjson.com/todos").then(function (response) {
-      setTodos(response.data.todos);
-    });
-  });
-
+export function App() {
+  const [selectedId, setSelectedId] = useState(1);
   return (
     <>
-      {todos.map((todo) => {
-        <Todo title={todo.title} description={todo.description}/>;
-      })}
+    
+      <button
+        onClick={() => {
+          setSelectedId(1);
+        }}
+      >
+        1
+      </button>
+      <button
+        onClick={() => {
+          setSelectedId(2);
+        }}
+      >
+        2
+      </button>
+      <button
+        onClick={() => {
+          setSelectedId(3);
+        }}
+      >
+        3
+      </button>
+      <button
+        onClick={() => {
+          setSelectedId(4);
+        }}
+      >
+        4
+      </button>
+      <Todo id={selectedId} />
     </>
   );
 }
 
-function Todo(title,description) {
+function Todo({ id }) {
+  const [todos, setTodos] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/todos?todoId=${id}`)
+      .then(function (response) {
+        setTodos(response.data);
+      });
+  }, [id]);
   return (
     <>
-    <h2>{title}</h2>
-    <p>{description}</p>
+    <br />
+      id:{id}
+      <h1>{todos.title}</h1>
+      {todos.description}
     </>
-  )
+  );
 }
-
-export default App;
